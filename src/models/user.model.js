@@ -1,4 +1,4 @@
-import mongoose, {Schema} from 'mangose';
+import mongoose, {Schema} from 'mongoose';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 const userSchema = new Schema({ 
@@ -28,7 +28,7 @@ const userSchema = new Schema({
         type: String, //cloudinary url
         required: true,
     },
-    converImage: {
+    coverImage: {
         type: String, //cloudinary url
        
     },

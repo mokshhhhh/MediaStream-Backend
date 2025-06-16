@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { registerUser } from "../controllers/user.controller.js";
-import {upload} from "../controllers/user.controller.js"
+import {upload} from "../middlewares/multer.middleware.js"
+
 const router=Router()
  
 router.route("/register").post(
@@ -10,9 +11,17 @@ router.route("/register").post(
             maxCount:1
         },
         {
-            name:"converImage",
+            name:"coverImage",
             maxCount:1
         }
     ]),
+    
+    (req, res, next) => {
+      
+     console.log("✅ multer passed");
+    console.log("📥 req.body:", req.body);
+    console.log("📁 req.files:", req.files);
+    next();
+    },
     registerUser)
 export default router

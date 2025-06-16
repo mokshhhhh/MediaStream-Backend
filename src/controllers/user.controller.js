@@ -5,6 +5,7 @@ import {uploadOnCloudinary} from "../utils/cloudinary.service.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 
 const registerUser=asyncHandler(async(req,res)=>{
+ 
     //get user details from frontend 
     //validation and handling
     //if user already exists
@@ -15,7 +16,7 @@ const registerUser=asyncHandler(async(req,res)=>{
     //check for user creation and return response
 
 const {fullname, email ,username , password} =req.body //from postman currently
-console.log("email:", email);
+console.log("body"  , req.body)
     //empty
     if(
         [fullname,email,username,password].some((field)=>field?. trim()==="")
@@ -23,7 +24,7 @@ console.log("email:", email);
         throw new ApiError(400, "All fields are required");
     }
     //existing user
-   const existingUser= User.findOne({
+   const existingUser= await User.findOne({
         $or:[{ email }, { username }]
     })
     if(existingUser){
@@ -37,7 +38,11 @@ console.log("email:", email);
         throw new ApiError(400, "Avatar image is required");
     }
     //image can be huge so await used 
+    console.log("Avatar local path:", avatarLocalPath)
+    console.log("Cover image local path:", coverImageLocalPath)
+
     const avatar=await uploadOnCloudinary(avatarLocalPath)
+    console.log("Avatar from Cloudinary:", avatar)
     const coverImage=await uploadOnCloudinary(coverImageLocalPath)
 
     if(!avatar){
