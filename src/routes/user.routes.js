@@ -15,13 +15,5 @@ router.route("/register").post(
             maxCount:1
         }
     ]),
-    
-    (req, res, next) => {
-      
-     console.log("✅ multer passed");
-    console.log("📥 req.body:", req.body);
-    console.log("📁 req.files:", req.files);
-    next();
-    },
     registerUser)
 export default router

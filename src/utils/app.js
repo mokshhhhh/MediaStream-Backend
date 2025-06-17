@@ -13,10 +13,10 @@ app.use(cookieParser())
 
 //routes
 
-import userRouter from '../routes/user.routes.js'
+import router from '../routes/user.routes.js';
 
 //routes declaration
-app.use("/api/v1/users",userRouter)
+app.use("/api/v1/users",router)
 //https://localhost:8000/api/v1/users/register
 
 // // Global error handler(chatgpt soln for postman error [object object])
