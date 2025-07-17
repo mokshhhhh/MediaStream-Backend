@@ -1,27 +1,33 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import {ApiError} from "../utils/apiError.js";
-import {User} from "../models/user.model.js"
+import {User} from "../models/user.model.js";
 import {uploadOnCloudinary} from "../utils/cloudinary.service.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
  
-const generateAccessAndRefreshTokens=async(userId)=>{
+const generateAccessAndRefereshTokens = async (userId) => {
     try {
-        //User is mongoose db linked while user is our own logic 
-        const user=await User.findOne(userId)
-        const accessToken=user.generateAcessToken()
-        const refreshToken=user.generateRefreshToken()
-        //access tokens can be showed to user but refresh tokens are long lived 
-        // so needs to be sent to db
-        user.refreshToken=refreshToken
-        await user.save({validateBeforeSave : false}) // done so that pswd field which is reqd in user.model is bypassed
+        
 
-        return {accessToken, refreshToken}
+        const user = await User.findById(userId);
+
+        // If user is null here, something is wrong with the ID or finding the user.
+        if (!user) {
+            // This shouldn't happen based on your previous logs, but good to have
+            throw new ApiError(404, "User not found for token generation inside generateTokens");
+        }
+
+        const accessToken = user.generateAccessToken(); // This is a prime suspect line
+        const refreshToken = user.generateRefreshToken(); // This is another prime suspect line
+
+        user.refreshToken = refreshToken;
+        await user.save({ validateBeforeSave: false }); // This is also a strong suspect line
+        return { accessToken, refreshToken };
 
     } catch (error) {
-        throw new ApiError(500,"something went wrong whilst generating access and refresj tokens")
+        
+        throw new ApiError(500, "Something went wrong while generating refresh and access tokens");
     }
 }
-
 const registerUser=asyncHandler(async(req,res)=>{
  
     //get user details from frontend 
@@ -30,7 +36,7 @@ const registerUser=asyncHandler(async(req,res)=>{
     //check for images, check for avatar
     //upload to cloudinary
     //create user as object - create entry in idb
-    //remove pswd and refresh token from response
+    //remove pswd and refresh token from response 
     //check for user creation and return response
 
 const {fullname, email ,username , password} =req.body //from postman currently
@@ -97,16 +103,19 @@ const loginUser=asyncHandler(async(req,res)=>{
     // username or email 
     // find user and then check password
     //access and refresh token 
-    // send cookies , send res that login successful 
+    // send cookies , send response that login successful 
 
     const {email,username,password}=req.body
-    if(!username || !email){
+    if(!(username || email)){
         throw new ApiError(400, "Username or email is required");
     }
     
     const user= await User.findOne({
         $or: [{username},{email}]
     })
+    console.log("User object found:", user);
+    console.log("Does user have generateAccessToken?", typeof user.generateAccessToken);
+    console.log("Does user have generateRefreshToken?", typeof user.generateRefreshToken);
 
     if(!user){
         throw new ApiError(404,"username doesnt exist")
@@ -117,11 +126,11 @@ const loginUser=asyncHandler(async(req,res)=>{
     if(!isPasswordValid){
         throw new ApiError(401,"Invalid user credentials")
     }
-
-    const {accessToken, refreshToken} =await generateAccessAndRefreshTokens(user._id)
+ 
+   const {accessToken , refreshToken} = await generateAccessAndRefereshTokens(user._id)
     
     //dont want to send pswd or refreshTokens to user
-    const loggedUser=User.findById(user._id).select("-password -refreshToken")
+    const loggedUser=await User.findById(user._id).select("-password -refreshToken")
     
     const options={
         httpOnly: true,
@@ -144,9 +153,29 @@ const loginUser=asyncHandler(async(req,res)=>{
     )
 })
 
-const logoutUser=asyncHandler(async=>(req,res)=>{
-    
+const logoutUser=asyncHandler(async(req,res)=>{
+    await User.findByIdAndUpdate(
+        req.user._id,
+        {
+            $set:{
+                refreshToken:undefined
+            }
+        },
+        {
+            new: true
+        }
+    )
+    const options={
+        httpOnly: true,
+        secure:true
+    }
+
+    return res
+    .status(200)
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken",options)
+    .json(new ApiResponse(200, {}, "User logget out successfully"))
 })
 
 
-export { registerUser ,loginUser}
+export { registerUser ,loginUser ,logoutUser}
