@@ -1,9 +1,10 @@
 
 import dotenv from "dotenv"
 import DBconnect from "./db/index.js"
-import {app} from "./utils/app.js"
+import {app} from "./app.js"
+//console.log("App instance imported in index.js:", app === global.myAppInstanceCheck); // Add this
 dotenv.config({
-    path: './.env'
+    path: './env'
 })
 
 DBconnect()
