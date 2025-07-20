@@ -173,8 +173,8 @@ const logoutUser = asyncHandler(async (req, res) => {
   await User.findByIdAndUpdate(
     req.user._id,
     {
-      $set: {
-        refreshToken: undefined, //Functionality for logging out
+      $unset: {
+        refreshToken: 1, //Functionality for logging out
       },
     },
     {
@@ -194,8 +194,10 @@ const logoutUser = asyncHandler(async (req, res) => {
 });
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
+  console.log("refresh me hu bidu")
   const incomingRefreshToken =
     req.cookies.refreshToken || req.body.refreshToken;
+    console.log("entered refreshaaccesstoken", incomingRefreshToken)
   // to see if user can continue being logged in the session even after refresh token has been expired
   if (!incomingRefreshToken) {
     throw new ApiError(401, "unauthorized access/ request");
@@ -206,7 +208,8 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       incomingRefreshToken,
       process.env.REFRESH_TOKEN_SECRET
     );
-
+    console.log("decoded token",decodedToken)
+    console.log("decoded token id",decodedToken?._id)
     const user = await User.findById(decodedToken?._id);
 
     if (!user) {
@@ -233,19 +236,21 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
         new ApiResponse(
           200,
           { accessToken, refreshToken: newRefreshToken },
-          "access Token refreshed successfully"
+          "refresh Token refreshed successfully"
         )
-      );
+      )
   } catch (error) {
     throw new ApiError(401, error?.message || "invalid refresh Token");
   }
 });
 
 const changeCurrentPassword = asyncHandler(async (req, res) => {
-  const { oldPassword, newPassword } = req.body;
-
-  const user = User.findById(req.user?._id);
-  const isPasswordCorrect = await isPasswordCorrect(oldPassword);
+  console.log("in pswd change rn")
+  const {oldPassword, newPassword} = req.body;
+  console.log(req.body)
+  const user = await User.findById(req.user?._id);
+  console.log("ghusgya hu mthod me",user)
+  const isPasswordCorrect = await user.isPasswordCorrect(oldPassword);
 
   if (!isPasswordCorrect) {
     throw new ApiError(401, "invalid old password");

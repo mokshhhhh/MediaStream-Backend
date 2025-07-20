@@ -35,7 +35,7 @@ router.route("/login").post(loginUser);
 
 //secured routes
 router.route("/logout").post(verifyJWT, logoutUser); //verifyJWT-> middleware
-router.route("refresh-Token").post(refreshAccessToken);
+router.route("/refreshToken").post(refreshAccessToken);
 router.route("/password-change").post(verifyJWT, changeCurrentPassword);
 router.route("/current-user").get(verifyJWT, getCurrentUser);
 router
