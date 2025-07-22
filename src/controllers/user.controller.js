@@ -1,6 +1,7 @@
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/apiError.js";
 import { User } from "../models/user.model.js";
+import mongoose,{Schema} from "mongoose";
 import { uploadOnCloudinary } from "../utils/cloudinary.service.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import jwt from "jsonwebtoken";
@@ -38,7 +39,7 @@ const registerUser = asyncHandler(async (req, res) => {
   //if user already exists
   //check for images, check for avatar
   //upload to cloudinary
-  //create user as object - create entry in idb
+  //create user as object - create entry in db
   //remove pswd and refresh token from response
   //check for user creation and return response
 

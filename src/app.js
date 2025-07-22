@@ -15,7 +15,7 @@ app.use(cookieParser())
 //routes
 // console.log("App instance created in app.js:", app === global.myAppInstanceCheck); // Add this
 // global.myAppInstanceCheck = app; // Temporarily assign to global for comparison
-console.log("app bgeininig")
+
 import router from "./routes/user.routes.js"
 
 //routes declaration
