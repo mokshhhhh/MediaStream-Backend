@@ -3,7 +3,7 @@
 This project delivers a robust API backend focusing on comprehensive user authentication, account management, and content-related profile features. While drawing inspiration from the user experience of platforms like YouTube, it serves as a foundational demonstration of implementing core backend services and best practices.
 
 <br>
-![Database Schema Diagram](public/dbOverwiew.png)
+![Database Schema Diagram](public/assets/dbOverwiew.png)
 <h3>Technologies & Tools: </h3>
 <ul>
   <li><strong>Node.js:</strong> JavaScript runtime for server-side execution.</li>
