@@ -3,7 +3,8 @@
 This project delivers a robust API backend focusing on comprehensive user authentication, account management, and content-related profile features. While drawing inspiration from the user experience of platforms like YouTube, it serves as a foundational demonstration of implementing core backend services and best practices.
 
 <br>
-![Database Schema Diagram](public/dbOverwiew.png)
+<h2> Database Schema Overview : ER Model</h2>
+<img width="1208" height="2163" alt="Entity Relationship Model" src="https://github.com/user-attachments/assets/33c3fc9f-3fd0-43b3-a333-5735f9445763" />
 <h3>Technologies & Tools: </h3>
 <ul>
   <li><strong>Node.js:</strong> JavaScript runtime for server-side execution.</li>
