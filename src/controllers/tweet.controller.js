@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiError } from "../utils/apiError.js";
-import { User } from "../models/user.model.js";
+
 import { Tweet } from "../models/tweet.model.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 
@@ -27,6 +27,7 @@ const createTweet = asyncHandler(async (req, res) => {
 
 const getTweets = asyncHandler(async (req, res) => {
   const { userId } = req.params;
+  
   if (!userId) {
     throw new ApiError(400, " User ID is required");
   }
@@ -40,14 +41,14 @@ const getTweets = asyncHandler(async (req, res) => {
     {
       $project: {
         content: 1,
-        onwer: 1,
+        owner : 1,
         createdAt: 1,
       },
     },
   ]);
 
-  if (!tweets) {
-    throw new ApiError(404, "No tweets could be fetched from this user");
+  if (tweets.length === 0) {
+    throw new ApiError(404, "No tweets could be fetched from this user / empty ");
   }
 
   return res
